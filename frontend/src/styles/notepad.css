@@ -1,0 +1,535 @@
+/**
+ * Collaborative Notepad Styles
+ * Matches the app's glassmorphism aesthetic
+ * All class names prefixed with "notepad-" to avoid conflicts
+ */
+
+/* ── Main Panel ─────────────────────────────────────────────────────────── */
+.notepad-panel {
+    position: absolute;
+    background: rgba(15, 20, 35, 0.85);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    height: calc(100vh - 40px);
+    width: 420px;
+    right: 20px;
+    top: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+        0 0 40px rgba(99, 102, 241, 0.1);
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    animation: notepad-slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    overflow: hidden;
+}
+
+@keyframes notepad-slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+.notepad-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.notepad-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.notepad-header-left h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.01em;
+}
+
+.notepad-title-icon {
+    color: rgba(99, 102, 241, 0.9);
+    font-size: 1.4rem !important;
+}
+
+.notepad-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.notepad-header-btn {
+    color: rgba(255, 255, 255, 0.6) !important;
+    transition: all 0.2s ease !important;
+}
+
+.notepad-header-btn:hover {
+    color: #fff !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.notepad-close-btn:hover {
+    color: #ff4757 !important;
+    background: rgba(255, 71, 87, 0.15) !important;
+}
+
+.notepad-share-btn {
+    position: relative;
+}
+
+.notepad-share-btn:hover {
+    color: #818cf8 !important;
+    background: rgba(99, 102, 241, 0.15) !important;
+}
+
+.notepad-share-btn.copied {
+    color: #4ade80 !important;
+    background: rgba(74, 222, 128, 0.15) !important;
+}
+
+/* ── Connection Status ──────────────────────────────────────────────────── */
+.notepad-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+}
+
+.notepad-status svg {
+    font-size: 0.5rem !important;
+}
+
+.notepad-status.connected {
+    color: #4ade80;
+    background: rgba(74, 222, 128, 0.12);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+}
+
+.notepad-status.connected svg {
+    animation: notepad-pulse 2s infinite;
+}
+
+@keyframes notepad-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+/* ── Active Users ───────────────────────────────────────────────────────── */
+.notepad-users {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.notepad-user-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    border: 2px solid rgba(15, 20, 35, 0.8);
+    margin-left: -8px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.notepad-user-avatar:first-child {
+    margin-left: 0;
+}
+
+.notepad-user-avatar:hover {
+    transform: translateY(-2px) scale(1.1);
+    z-index: 10;
+}
+
+.notepad-user-count {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(15, 20, 35, 0.8);
+    margin-left: -8px;
+}
+
+/* ── Toolbar ────────────────────────────────────────────────────────────── */
+.notepad-toolbar {
+    display: flex !important;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 12px !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    min-height: 52px;
+}
+
+/* Hide scrollbar but keep functionality */
+.notepad-toolbar::-webkit-scrollbar {
+    height: 4px;
+}
+
+.notepad-toolbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.notepad-toolbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
+.notepad-toolbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.notepad-toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.notepad-toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 0 6px;
+    flex-shrink: 0;
+}
+
+.notepad-toolbar-spacer {
+    flex: 1;
+    min-width: 8px;
+}
+
+.notepad-toolbar button {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: none !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    cursor: pointer;
+    transition: all 0.2s ease !important;
+    flex-shrink: 0;
+}
+
+.notepad-toolbar button:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+.notepad-toolbar button.ql-active {
+    background: rgba(99, 102, 241, 0.3) !important;
+    color: #a5b4fc !important;
+}
+
+.notepad-toolbar button svg {
+    font-size: 1.1rem;
+    width: 18px;
+    height: 18px;
+}
+
+.notepad-toolbar .ql-formats {
+    display: none !important;
+}
+
+.notepad-history-btns {
+    flex-shrink: 0;
+}
+
+.notepad-history-btns .MuiIconButton-root {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    flex-shrink: 0;
+}
+
+.notepad-history-btns .MuiIconButton-root:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+.notepad-history-btns svg {
+    font-size: 1.1rem !important;
+}
+
+/* ── Editor Container ───────────────────────────────────────────────────── */
+.notepad-editor-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.notepad-editor {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Quill Overrides ────────────────────────────────────────────────────── */
+.notepad-panel .ql-container {
+    flex: 1;
+    border: none !important;
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 0.95rem;
+    overflow: hidden;
+}
+
+.notepad-panel .ql-editor {
+    padding: 20px;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.7;
+    overflow-y: auto;
+    height: 100%;
+}
+
+.notepad-panel .ql-editor.ql-blank::before {
+    color: rgba(255, 255, 255, 0.3);
+    font-style: normal;
+    left: 20px;
+}
+
+.notepad-panel .ql-editor h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 16px 0;
+    line-height: 1.3;
+}
+
+.notepad-panel .ql-editor h2 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 12px 0;
+    line-height: 1.4;
+}
+
+.notepad-panel .ql-editor p {
+    margin: 0 0 12px 0;
+}
+
+.notepad-panel .ql-editor strong {
+    color: #fff;
+    font-weight: 600;
+}
+
+.notepad-panel .ql-editor em {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.notepad-panel .ql-editor s {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.notepad-panel .ql-editor ul,
+.notepad-panel .ql-editor ol {
+    padding-left: 24px;
+    margin: 0 0 16px 0;
+}
+
+.notepad-panel .ql-editor li {
+    margin: 0 0 8px 0;
+    padding-left: 4px;
+}
+
+.notepad-panel .ql-editor li::marker {
+    color: rgba(99, 102, 241, 0.8);
+}
+
+.notepad-panel .ql-editor pre.ql-syntax {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.85rem;
+    color: #a5f3fc;
+    overflow-x: auto;
+    line-height: 1.6;
+}
+
+.notepad-panel .ql-editor a {
+    color: #818cf8;
+    text-decoration: none;
+}
+
+.notepad-panel .ql-editor a:hover {
+    text-decoration: underline;
+}
+
+/* ── Multi-user Cursors ─────────────────────────────────────────────────── */
+.notepad-panel .ql-cursor-caret-container {
+    position: absolute;
+}
+
+.notepad-panel .ql-cursor-caret {
+    position: absolute;
+    width: 2px;
+    height: 1.2em;
+    margin-left: -1px;
+}
+
+.notepad-panel .ql-cursor-flag {
+    position: absolute;
+    top: -22px;
+    left: -1px;
+    padding: 3px 8px;
+    border-radius: 6px 6px 6px 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: #fff;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    opacity: 1;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.notepad-panel .ql-cursor-selection-block {
+    position: absolute;
+    opacity: 0.25;
+}
+
+/* ── Scrollbar ──────────────────────────────────────────────────────────── */
+.notepad-panel .ql-editor::-webkit-scrollbar {
+    width: 8px;
+}
+
+.notepad-panel .ql-editor::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.notepad-panel .ql-editor::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+}
+
+.notepad-panel .ql-editor::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* ── Selection ──────────────────────────────────────────────────────────── */
+.notepad-panel .ql-editor ::selection {
+    background: rgba(99, 102, 241, 0.4);
+}
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .notepad-panel {
+        width: 360px;
+    }
+}
+
+@media (max-width: 768px) {
+    .notepad-panel {
+        width: calc(100vw - 40px);
+        right: 20px;
+        left: 20px;
+        height: 60vh;
+        top: auto;
+        bottom: 120px;
+        border-radius: 20px;
+    }
+
+    .notepad-toolbar {
+        padding: 8px 12px !important;
+        overflow-x: auto;
+    }
+
+    .notepad-header {
+        padding: 14px 16px;
+    }
+
+    .notepad-header-left h2 {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .notepad-panel {
+        width: calc(100vw - 20px);
+        right: 10px;
+        left: 10px;
+    }
+
+    .notepad-toolbar-divider {
+        display: none;
+    }
+
+    .notepad-users {
+        padding: 8px 16px;
+    }
+}
+
+/* ── Print Styles ───────────────────────────────────────────────────────── */
+@media print {
+    .notepad-panel {
+        position: static;
+        width: 100%;
+        height: auto;
+        background: #fff;
+        box-shadow: none;
+        border: none;
+    }
+
+    .notepad-header,
+    .notepad-toolbar,
+    .notepad-users {
+        display: none;
+    }
+
+    .notepad-panel .ql-editor {
+        color: #000;
+        padding: 0;
+    }
+}

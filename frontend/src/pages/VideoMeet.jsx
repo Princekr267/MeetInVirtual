@@ -22,8 +22,14 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import StarIcon from '@mui/icons-material/Star';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import ShareIcon from '@mui/icons-material/Share';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import { GoogleGenAI } from "@google/genai";
 import { AuthContext } from '../context/AuthContext';
+import CollabNotepad from './components/CollabNotepad';
 
 
 const SERVER_URL = "http://localhost:3000";
@@ -163,6 +169,7 @@ export default function VideoMeetComponent() {
     // UI panels
     let [showModal,      setModal]      = useState(false);
     let [showUsersPanel, setShowUsersPanel] = useState(false);
+    let [showNotepad,    setShowNotepad]    = useState(false);
 
     // Chat
     let [messages,    setMessages]    = useState([]);
@@ -195,6 +202,10 @@ export default function VideoMeetComponent() {
 
     // Flash notifications
     const [notification, setNotification] = useState(null);
+
+    // Share prompt
+    const [showSharePrompt, setShowSharePrompt] = useState(true);
+    const [shareCopied, setShareCopied] = useState(false);
 
     // Remote video streams
     let [videos, setVideos] = useState([]);
@@ -767,6 +778,28 @@ export default function VideoMeetComponent() {
         setShowUsersPanel(prev => !prev);
     };
 
+    const handleNotepadToggle = () => {
+        setShowNotepad(prev => !prev);
+    };
+
+    const handleShareRoom = async () => {
+        const shareUrl = window.location.href;
+        try {
+            await navigator.clipboard.writeText(shareUrl);
+            setShareCopied(true);
+            setTimeout(() => setShareCopied(false), 2000);
+        } catch (err) {
+            const textArea = document.createElement('textarea');
+            textArea.value = shareUrl;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            setShareCopied(true);
+            setTimeout(() => setShareCopied(false), 2000);
+        }
+    };
+
     // ── TextField sx (reused) ───────────────────────────────────────────────
     const textFieldSx = {
         '& .MuiOutlinedInput-root': {
@@ -920,6 +953,42 @@ export default function VideoMeetComponent() {
 
     return (
         <div className="meetVideoContainer">
+
+            {/* ── Share Room Prompt ────────────────────────────────────────── */}
+            {showSharePrompt && (
+                <div className="share-prompt">
+                    <div className="share-prompt-content">
+                        <ShareIcon className="share-prompt-icon" />
+                        <div className="share-prompt-text">
+                            <span className="share-prompt-title">Invite others to join</span>
+                            <span className="share-prompt-subtitle">Share this meeting link</span>
+                        </div>
+                        <button
+                            className={`share-prompt-btn ${shareCopied ? 'copied' : ''}`}
+                            onClick={handleShareRoom}
+                        >
+                            {shareCopied ? (
+                                <>
+                                    <CheckIcon />
+                                    <span>Copied!</span>
+                                </>
+                            ) : (
+                                <>
+                                    <ContentCopyIcon />
+                                    <span>Copy Link</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
+                    <button
+                        className="share-prompt-close"
+                        onClick={() => setShowSharePrompt(false)}
+                        title="Dismiss"
+                    >
+                        <CloseIcon />
+                    </button>
+                </div>
+            )}
 
             {/* ── Chat Panel ──────────────────────────────────────────── */}
             {showModal && (
@@ -1251,6 +1320,15 @@ export default function VideoMeetComponent() {
                 </div>
             )}
 
+            {/* ── Collaborative Notepad ────────────────────────────────────── */}
+            {showNotepad && (
+                <CollabNotepad
+                    roomId={window.location.pathname}
+                    userName={username}
+                    onClose={() => setShowNotepad(false)}
+                />
+            )}
+
             {/* ── Control Bar ─────────────────────────────────────────── */}
             <div className="buttonContainers">
                 <IconButton
@@ -1325,6 +1403,14 @@ export default function VideoMeetComponent() {
                         <PeopleIcon />
                     </IconButton>
                 </Badge>
+
+                <IconButton
+                    onClick={handleNotepadToggle}
+                    className={showNotepad ? 'activeIcon' : 'inactiveIcon'}
+                    title="Collaborative Notes"
+                >
+                    <EditNoteIcon />
+                </IconButton>
             </div>
 
             {/* ── Local Video PIP ──────────────────────────────────────── */}
