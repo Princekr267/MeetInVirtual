@@ -20,46 +20,16 @@
 
 ## ✨ Features
 
-### 🔐 Authentication & Security
-- **Secure User Authentication** - JWT-based authentication with bcrypt password hashing
-- **Google OAuth 2.0** - Sign in seamlessly with your Google account
-- **Password Recovery** - Reset forgotten passwords via email with secure tokens
-- **Protected Routes** - HOC-based route protection for secure access
-
-### 🎥 Video Conferencing
-- **HD Video Calling** - Crystal-clear peer-to-peer video using WebRTC technology
-- **Multi-Party Calls** - Support for multiple participants in a single room
-- **Audio/Video Controls** - Toggle camera and microphone with beautiful animations
-- **Screen Sharing** - Share your entire screen or specific application windows
-- **Elegant Lobby** - Preview and test your audio/video before joining
-- **Beautiful Video Tiles** - Stunning UI with avatar fallbacks when camera is off
-
-### 👥 Meeting Management
-- **Host Controls** - Lock rooms, remove participants, and manage meetings (host-only)
-- **Participants Panel** - See all participants with real-time status indicators
-- **Unique Room Codes** - Auto-generated secure meeting codes
-- **Meeting History** - Track and rejoin all your past meetings
-- **Easy Room Sharing** - One-click copy meeting links to invite others
-
-### 💬 Real-Time Communication
-- **Live Chat** - In-meeting text messaging with elegant bubble UI
-- **AI Chat Assistant** - Powered by Google Gemini AI for instant help
-- **File Sharing** - Share documents, images, and files during meetings
-- **Download Chat History** - Export all your chat messages as a text file
-- **Typing Indicators** - Real-time status updates
-
-### 🎨 User Experience
-- **Modern Glass-Morphism UI** - Beautiful gradients, blur effects, and animations
-- **Fully Responsive** - Optimized for desktop, tablet, and mobile devices
-- **Dark Theme** - Easy on the eyes with a sleek dark interface
-- **Real-time Notifications** - Flash notifications for important events
-- **Smooth Animations** - Polished transitions and micro-interactions
-
-### 🚀 Performance & Reliability
-- **Socket.IO Integration** - Real-time bidirectional communication
-- **STUN Server Support** - NAT traversal for reliable connections
-- **Optimized Rendering** - React 19 with efficient state management
-- **Error Handling** - Comprehensive error handling and user feedback
+- 🔐 **User Authentication** - Secure registration and login with token-based authentication
+- 🎥 **Real-time Video Calling** - High-quality peer-to-peer video communication using WebRTC
+- 🎤 **Audio Control** - Toggle microphone on/off during calls
+- 📹 **Video Control** - Enable/disable camera as needed
+- 🖥️ **Screen Sharing** - Share your screen with meeting participants
+- 💬 **Live Chat** - Text messaging during video calls
+- **AI in the chat** - Ask "@ai" anything during live calls
+- 📝 **Meeting History** - Track all your past meetings
+- 🔗 **Easy Meeting Access** - Join meetings using simple meeting codes
+- 📱 **Responsive Design** - Works seamlessly across devices
 
 ## 🛠️ Technology Stack
 
@@ -1065,202 +1035,13 @@ fuser -k 3000/tcp
 <details>
 <summary><strong>📧 Email Not Sending (Password Reset)</strong></summary>
 
-**Error:** `Invalid login` or `Connection timeout`
-
-**Solutions:**
-
-1. **Gmail App Password:**
-   - Enable 2FA on your Google account
-   - Generate an App Password: [Google Account Settings](https://myaccount.google.com/apppasswords)
-   - Use App Password in `.env`, not your regular password
-
-2. **Update `.env`:**
-   ```env
-   EMAIL_USER=your_email@gmail.com
-   EMAIL_PASSWORD=your_16_char_app_password
-   ```
-
-3. **Test Email Configuration:**
-   ```bash
-   cd backend
-   node src/test-email.js
-   ```
-
-4. **Alternative Providers:**
-   - SendGrid, Mailgun, AWS SES for production
-</details>
-
-<details>
-<summary><strong>⚛️ React Build Errors</strong></summary>
-
-**Error:** `Cannot find module` or build failures
-
-**Solutions:**
-```bash
-# Clear node_modules and reinstall
-cd frontend
-rm -rf node_modules package-lock.json
-npm install
-
-# Clear Vite cache
-rm -rf .vite
-npm run dev
-
-# Check for peer dependency issues
-npm install --legacy-peer-deps
-```
-</details>
-
-<details>
-<summary><strong>🚫 CORS Errors</strong></summary>
-
-**Error:** `Access-Control-Allow-Origin` error
-
-**Solutions:**
-
-1. **Check Backend CORS Configuration:**
-   ```javascript
-   // backend/src/app.js
-   const corsOptions = {
-     origin: 'http://localhost:5173',  // Frontend URL
-     credentials: true
-   };
-   app.use(cors(corsOptions));
-   ```
-
-2. **Verify Frontend Requests:**
-   ```javascript
-   // Include credentials
-   axios.defaults.withCredentials = true;
-   ```
-</details>
-
-### Performance Optimization
-
-**If experiencing lag or poor quality:**
-
-1. **Reduce Video Quality:**
-   ```javascript
-   const constraints = {
-     video: {
-       width: { ideal: 1280 },
-       height: { ideal: 720 },
-       frameRate: { ideal: 24 }  // Reduce from 30
-     }
-   };
-   ```
-
-2. **Limit Participants:**
-   - Mesh topology works best for 4-8 participants
-   - Consider SFU (Selective Forwarding Unit) for larger meetings
-
-3. **Monitor Network:**
-   - Check bandwidth: [Fast.com](https://fast.com)
-   - Upload speed should be > 2 Mbps for HD video
-
----
-
-## 📊 Performance & Browser Support
-
-### Browser Compatibility
-
-| Browser | Minimum Version | Recommended | Notes |
-|---------|----------------|-------------|-------|
-| Chrome | 74+ | Latest | ⭐ Best performance |
-| Firefox | 66+ | Latest | ✅ Full support |
-| Safari | 12.1+ | Latest | ⚠️ Some WebRTC limitations |
-| Edge | 79+ | Latest | ✅ Full support |
-| Opera | 62+ | Latest | ✅ Full support |
-| Mobile Safari | 12.2+ | Latest | ⚠️ Limited functionality |
-| Mobile Chrome | 74+ | Latest | ✅ Good support |
-
-### System Requirements
-
-**Minimum:**
-- CPU: Dual-core 2.0 GHz
-- RAM: 4 GB
-- Network: 1 Mbps upload/download
-- Browser: See compatibility table
-
-**Recommended:**
-- CPU: Quad-core 2.5 GHz+
-- RAM: 8 GB+
-- Network: 5+ Mbps upload/download
-- Dedicated GPU (for screen sharing)
-
----
-
-## 🎯 Roadmap & Future Enhancements
-
-### ✅ Completed Features
-
-- [x] HD video calling with WebRTC
-- [x] Real-time chat messaging
-- [x] **AI-powered chat assistant** (Google Gemini integration)
-- [x] **Download chat history** as text file
-- [x] **Google OAuth authentication**
-- [x] **Password reset via email**
-- [x] **File sharing in chat**
-- [x] **Host controls** (lock room, remove participants)
-- [x] **Participants panel** with status indicators
-- [x] **Beautiful modern UI** with glass-morphism and animations
-- [x] **Unique room codes** generation
-- [x] Screen sharing
-- [x] Meeting history tracking
-- [x] Responsive mobile design
-
-### 🚧 In Progress
-
-- [ ] **Collaborative notepad/whiteboard** - Real-time document collaboration
-- [ ] **Meeting recordings** - Record and save meetings
-- [ ] **Virtual backgrounds** - Background blur and replacement
-
-### 📋 Planned Features
-
-#### High Priority
-- [ ] **End-to-end encryption** - Enhanced privacy for sensitive meetings
-- [ ] **Breakout rooms** - Split participants into smaller groups
-- [ ] **Reactions & hand raise** - Non-verbal communication
-- [ ] **Meeting scheduling** - Calendar integration (Google Calendar, Outlook)
-- [ ] **Waiting room** - Host approval before joining
-- [ ] **Meeting analytics** - Duration, participant count, engagement metrics
-
-#### Medium Priority
-- [ ] **Screen annotations** - Draw on shared screens
-- [ ] **Polls & Surveys** - In-meeting participant feedback
-- [ ] **Noise suppression** - AI-powered background noise removal
-- [ ] **Live captions** - Speech-to-text transcription
-- [ ] **Language translation** - Real-time message translation
-- [ ] **Meeting templates** - Predefined settings for recurring meetings
-
-#### Low Priority
-- [ ] **Dark mode toggle** - User preference for theme
-- [ ] **Participant search** - Quickly find participants in large meetings
-- [ ] **Custom backgrounds** - Upload personal background images
-- [ ] **Meeting minutes** - AI-generated summary of discussions
-- [ ] **Integration APIs** - Slack, Microsoft Teams, Discord webhooks
-- [ ] **Mobile apps** - Native iOS and Android applications
-
-### 🎨 UI/UX Improvements
-
-- [ ] Drag-and-drop file uploads
-- [ ] Picture-in-Picture mode
-- [ ] Grid/Speaker view toggle
-- [ ] Keyboard shortcuts
-- [ ] Accessibility improvements (WCAG 2.1)
-- [ ] Custom meeting URLs (vanity URLs)
-
-### 🏗️ Technical Improvements
-
-- [ ] Migrate to SFU architecture for better scalability
-- [ ] Redis for session management
-- [ ] GraphQL API
-- [ ] Kubernetes deployment configuration
-- [ ] Automated testing (Jest, Cypress)
-- [ ] Progressive Web App (PWA) support
-- [ ] WebAssembly for performance optimization
-
----
+## Future Enhancements
+- [x] AI in chat
+- [x] Download chat
+- [x] better meeting code
+- [x] better UI
+- [ ] white board or notepad
+- [ ] upload documents
 
 ## 🤝 Contributing
 
