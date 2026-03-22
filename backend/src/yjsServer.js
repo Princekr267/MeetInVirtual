@@ -9,7 +9,7 @@
 
 import { WebSocketServer } from 'ws';
 import * as Y from 'yjs';
-import { setupWSConnection } from 'y-websocket/bin/utils.js';
+import { setupWSConnection } from 'y-websocket/bin/utils';
 
 const PORT = process.env.YJS_PORT || 1234;
 

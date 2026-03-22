@@ -63,9 +63,8 @@ const getUserColor = (name) => {
 const getYjsServerUrl = () => {
     const prodUrl = import.meta.env.VITE_YJS_SERVER_URL;
     if (prodUrl) {
-        return prodUrl.startsWith('wss://') || prodUrl.startsWith('ws://')
-            ? prodUrl
-            : `wss://${prodUrl}`;
+        // Render exposes WebSocket on same domain, different path
+        return `${prodUrl}:1234`; // Make sure port is included
     }
     return 'ws://localhost:1234';
 };
