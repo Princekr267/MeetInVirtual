@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 
 import {connectToSocket} from "./controllers/socketManager.js";
+import {setupYjsWebSocket} from "./yjsServer.js";
 
 import userRoutes from "./routes/users.routes.js";
 
@@ -17,6 +18,9 @@ import passport from "./config/passport.js";
 const app = express();
 const server = createServer(app);
 const io = connectToSocket(server);
+
+// Setup Yjs WebSocket on the same server (using /yjs path)
+setupYjsWebSocket(server);
 
 app.set("port", (process.env.PORT || 3000));
 app.use(cors());

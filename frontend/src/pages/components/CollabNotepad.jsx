@@ -61,12 +61,12 @@ const getUserColor = (name) => {
 
 // Get Yjs WebSocket server URL based on environment
 const getYjsServerUrl = () => {
-    const prodUrl = import.meta.env.VITE_YJS_SERVER_URL;
-    if (prodUrl) {
-        // Render exposes WebSocket on same domain, different path
-        return `${prodUrl}:1234`; // Make sure port is included
+    const isProd = import.meta.env.VITE_YJS_SERVER_URL;
+    if (isProd) {
+        // Use WSS protocol and /yjs path on production
+        return isProd.replace('https://', 'wss://').replace('http://', 'ws://') + '/yjs';
     }
-    return 'ws://localhost:1234';
+    return 'ws://localhost:3000/yjs';
 };
 
 const CollabNotepad = ({ roomId, userName, onClose }) => {

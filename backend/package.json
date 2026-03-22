@@ -7,10 +7,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"nodemon src/app.js\" \"node src/yjsServer.js\"",
-    "start": "concurrently \"node src/app.js\" \"node src/yjsServer.js\"",
-    "prod": "pm2 src/app.js",
-    "yjs": "node src/yjsServer.js"
+    "dev": "nodemon src/app.js",
+    "start": "node src/app.js",
+    "prod": "pm2 src/app.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
