@@ -7,6 +7,8 @@ import VideoMeetComponent from './pages/VideoMeet'
 import HomeComponent from './pages/home'
 import History from './pages/history'
 import Profile from './pages/Profile'
+import GoogleAuthCallback from './pages/GoogleAuthCallback';
+
 
 function App() {
 
@@ -21,6 +23,7 @@ function App() {
           <Route path='/Profile' element={<Profile/>}/>
           <Route path="/:url" element={<VideoMeetComponent/>}/>
           <Route path='/history' element={<History/>}/>
+          <Route path="/auth/google/success" element={<GoogleAuthCallback />} />
         </Routes>
         </AuthProvider>
       </Router>

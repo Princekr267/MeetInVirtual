@@ -38,7 +38,7 @@ export default function History(){
     return (
         <div>
             <Navbar/>
-            <div style={{ maxWidth: '80vw', margin: '0 auto', padding: '0 20px' }}>
+            <div className="historyWrapper" style={{ maxWidth: '100%', width: '90vw', margin: '0 auto', padding: '0 10px' }}>
             <div style={{ display: 'flex', alignItems: 'center', padding: '20px 0' }}>
                 <IconButton onClick={() => routeTo("/home")} sx={{ color: 'var(--text-primary)'}}>
                     <Home fontSize='large'/>

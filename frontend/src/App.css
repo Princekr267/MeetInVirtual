@@ -189,3 +189,46 @@
     font-size: 1.5rem;
   }
 }
+
+@media screen and (max-width: 480px) {
+  .landingPageContainer nav {
+    padding-inline: 1rem;
+  }
+  .landingPageContainer nav h2 {
+    font-size: 1.3rem;
+  }
+  .landingPageContainer nav .navList {
+    gap: 0.5rem;
+  }
+  .landingPageContainer nav .navList p {
+    font-size: 0.95rem;
+  }
+  .landingMainContainer {
+    padding-inline: 1rem;
+    padding-top: 2rem;
+  }
+  .landingMainContainer > div:nth-child(1) h1 {
+    font-size: 1.8rem;
+  }
+  .landingMainContainer > div:nth-child(1) p {
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+  .landingMainContainer > div:nth-child(1) div[role='button'] {
+    padding: 0.8rem 1.8rem;
+    margin: 1.5rem auto;
+  }
+  .landingMainContainer > div:nth-child(1) div[role='button'] p {
+    font-size: 1.1rem;
+  }
+  .landingMainContainer > div:nth-child(2) img {
+    height: 30vh;
+    margin-top: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .nav-text {
+    display: none !important;
+  }
+}

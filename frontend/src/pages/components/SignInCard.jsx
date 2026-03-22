@@ -10,7 +10,12 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { styled } from '@mui/material/styles';
+import { useSearchParams } from 'react-router-dom';
 import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
 import { AuthContext } from '../../context/AuthContext';
@@ -39,6 +44,9 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function SignInCard() {
+  const [searchParams] = useSearchParams();
+  const mode = searchParams.get('mode');
+
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -46,9 +54,10 @@ export default function SignInCard() {
   const [fullNameError, setFullNameError] = React.useState(false);
   const [fullNameErrorMessage, setFullNameErrorMessage] = React.useState('');
   const [open, setOpen] = React.useState(false);
-  const [formState, setFormState] = React.useState(0); // 0 for sign in, 1 for sign up
+  const [formState, setFormState] = React.useState(mode === 'register' ? 1 : 0); // 0 for sign in, 1 for sign up
   const [message, setMessage] = React.useState('');
   const [error, setError] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
 
   const {handleRegister, handleLogin} = React.useContext(AuthContext);
   
@@ -226,18 +235,47 @@ export default function SignInCard() {
             helperText={passwordErrorMessage}
             name="password"
             placeholder="••••••"
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             id="password"
             autoFocus={false}
             required
             fullWidth
             variant="outlined"
             color={passwordError ? 'error' : 'primary'}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowPassword(!showPassword)}
+                    edge="end"
+                    sx={{
+                      border: 'none',
+                      outline: 'none',
+                      '&:focus': { outline: 'none' },
+                      '&:hover': { backgroundColor: 'transparent' },
+                      color: 'text.secondary',
+                    }}
+                  >
+                    {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </FormControl>
         <ForgotPassword open={open} handleClose={handleClose} />
         <Button type="submit" fullWidth variant="contained">
           {formState === 1 ? 'Sign up' : 'Sign in'}
+        </Button>
+        <Button
+          fullWidth
+          variant="outlined"
+          startIcon={<GoogleIcon />}
+          onClick={() => window.location.href = "http://localhost:3000/api/v1/users/auth/google"}
+          sx={{ mt: 1 }}
+        >
+          Continue with Google
         </Button>
         <Typography sx={{ textAlign: 'center' }}>
           {formState === 1 ? "Already have an account? " : "Don't have an account? "}

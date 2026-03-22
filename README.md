@@ -14,6 +14,7 @@ A full-stack real-time video conferencing application built with the MERN stack 
 - 📹 **Video Control** - Enable/disable camera as needed
 - 🖥️ **Screen Sharing** - Share your screen with meeting participants
 - 💬 **Live Chat** - Text messaging during video calls
+- **AI in the chat** - Ask "@ai" anything during live calls
 - 📝 **Meeting History** - Track all your past meetings
 - 🔗 **Easy Meeting Access** - Join meetings using simple meeting codes
 - 📱 **Responsive Design** - Works seamlessly across devices
@@ -298,9 +299,10 @@ lsof -ti:3000 | xargs kill -9
 ## Future Enhancements
 - [x] AI in chat
 - [x] Download chat
-- [ ] better meeting code
+- [x] better meeting code
 - [x] better UI
 - [ ] white board or notepad
+- [ ] upload documents
 
 ## 🤝 Contributing
 

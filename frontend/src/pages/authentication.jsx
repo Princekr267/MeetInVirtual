@@ -3,13 +3,9 @@ import Stack from '@mui/material/Stack';
 import AppTheme from '../shared-theme/AppTheme.jsx';
 import ColorModeSelect from '../shared-theme/ColorModeSelect.jsx';
 import SignInCard from './components/SignInCard.jsx';
-import Content from './components/Content.jsx';
-import { useContext } from 'react';
-import { AuthProvider } from '../context/AuthContext.jsx';
-// import logo from "../../public/conferenceWorld_logo";
 
 export default function SignInSide(props) {
-
+  console.log(props);
   return (
     <AppTheme {...props}>
       <div className='navbar' style={{display: "flex", alignItems: "center"}}>

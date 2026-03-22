@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { IconButton, Button } from '@mui/material';
 import RestoreIcon from '@mui/icons-material/Restore';
 import PersonIcon from '@mui/icons-material/Person';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 // Meeting codes: exactly 10 lowercase alphanumeric characters
 const MEETING_CODE_LENGTH = 10;
@@ -43,11 +44,11 @@ function LandingPage() {
                 {!token ? <div className="navList">
                     <p onClick={handleGuestJoin}>Join as guest</p>
                     <p onClick={() => {
-                        router("/auth")
+                        router("/auth?mode=register")
                     }}>Register</p>
                     <div role='button'>
                         <p onClick={() => {
-                            router("/auth")
+                            router("/auth?mode=login")
                         }}>Login</p>
                     </div>
                 </div> : <div style={{display: "flex", alignItems: "center", gap: "10px"}}>
@@ -56,18 +57,19 @@ function LandingPage() {
                         onClick={() => navigate("/history")}
                         sx={{ color: "var(--text-primary)", textTransform: "none", fontSize: "1rem" }}
                     >
-                        History
+                        <span className="nav-text">History</span>
                     </Button>
                     <Button 
+                        startIcon={<LogoutIcon sx={{ display: { xs: 'block', sm: 'none' } }} />}
                         onClick={() => {
                             localStorage.removeItem("token")
                             navigate("/auth")
                         }} 
-                        sx={{ color: "var(--text-primary)", textTransform: "none", fontSize: "1rem" }}
+                        sx={{ color: "var(--text-primary)", textTransform: "none", fontSize: "1rem", minWidth: { xs: 'auto', sm: '64px' } }}
                     >
-                        Logout
+                        <span className="nav-text">Logout</span>
                     </Button>
-                    <Button className="profile-btn" onClick={() => navigate("/Profile")}>
+                    <Button className="profile-btn" onClick={() => navigate("/Profile")} sx={{ minWidth: 'auto', padding: '6px' }}>
                         <PersonIcon className="profile"/>        
                     </Button>
                 </div>}

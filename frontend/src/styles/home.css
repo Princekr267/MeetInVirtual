@@ -147,4 +147,14 @@
   .right-panel img {
     height: 170px;
   }
+  .meet-code button {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .nav-text {
+    display: none !important;
+  }
 }

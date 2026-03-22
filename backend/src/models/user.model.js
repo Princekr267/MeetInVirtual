@@ -17,6 +17,20 @@ const userSchema = new Schema(
         },
         token: {
             type: String
+        },
+        googleId: { 
+            type: String, 
+            sparse: true 
+        },
+        resetOtp: {
+            type: String
+        },
+        resetOtpExpiry: {
+            type: Date
+        },
+        resetOtpVerified: {
+            type: Boolean,
+            default: false
         }
     }
 )
