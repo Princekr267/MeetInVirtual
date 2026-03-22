@@ -14,8 +14,9 @@ import ParticipantsPanel from './components/ParticipantsPanel';
 import ConfirmDialog from './components/ConfirmDialog';
 import ControlBar from './components/ControlBar';
 import CollabNotepad from '../components/CollabNotepad';
+import servers from '../../enviroment';
 
-const SERVER_URL = "http://localhost:3000";
+const SERVER_URL = servers;
 const AI_SENDER  = "🤖 AI Assistant";
 
 // Module-level WebRTC peer connections map
