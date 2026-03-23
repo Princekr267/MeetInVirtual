@@ -284,6 +284,25 @@
     height: 56px;
 }
 
+/* Mobile/Desktop visibility for control bar */
+.buttonContainers .mobileOnly {
+    display: none;
+}
+
+.buttonContainers .desktopOnly {
+    display: flex;
+}
+
+@media screen and (max-width: 600px) {
+    .buttonContainers .mobileOnly {
+        display: flex;
+    }
+
+    .buttonContainers .desktopOnly {
+        display: none !important;
+    }
+}
+
 .activeIcon {
     background: rgba(255, 255, 255, 0.15) !important;
     border: 1px solid rgba(255,255,255,0.1);
@@ -967,10 +986,10 @@
     gap: 6px;
   }
   .chattingArea button {
-    width: 34px;
-    height: 34px;
-    min-width: 34px;
-    min-height: 34px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
   }
   .chattingArea button svg {
     font-size: 0.95rem;
@@ -1333,8 +1352,8 @@
         bottom: 10px;
     }
     .buttonContainers .MuiIconButton-root {
-        width: 40px;
-        height: 40px;
+        width: 44px;
+        height: 44px;
     }
     .buttonContainers svg {
         font-size: 1.2rem;

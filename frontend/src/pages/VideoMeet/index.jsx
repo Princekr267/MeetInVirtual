@@ -194,12 +194,24 @@ export default function VideoMeetComponent() {
     };
 
     const getUserMedia = () => {
-        if ((video && videoAvailable) || (audio && audioAvailable)) {
-            navigator.mediaDevices.getUserMedia({ video, audio })
+        const needVideo = video && videoAvailable;
+        const needAudio = audio && audioAvailable;
+
+        if (needVideo || needAudio) {
+            navigator.mediaDevices.getUserMedia({
+                video: needVideo,
+                audio: needAudio
+            })
                 .then(onLocalStreamReady)
                 .catch(console.error);
         } else {
-            try { localVideoRef.current.srcObject?.getTracks().forEach(t => t.stop()); } catch (_) {}
+            // If both are false, use blank stream
+            try {
+                localVideoRef.current.srcObject?.getTracks().forEach(t => t.stop());
+            } catch (_) {}
+            const blank = createBlankStream();
+            window.localStream = blank;
+            localVideoRef.current.srcObject = blank;
         }
     };
 
@@ -614,12 +626,19 @@ export default function VideoMeetComponent() {
     // ────────────────────────────────────────────────────────────────────────
 
     const handleChatToggle = () => {
-        if (!showModal) { setShowUsersPanel(false); setNewMessages(0); }
+        if (!showModal) {
+            setShowUsersPanel(false);
+            setShowNotepad(false);
+            setNewMessages(0);
+        }
         setModal(prev => !prev);
     };
 
     const handleUsersToggle = () => {
-        if (!showUsersPanel) setModal(false);
+        if (!showUsersPanel) {
+            setModal(false);
+            setShowNotepad(false);
+        }
         setShowUsersPanel(prev => !prev);
     };
 
