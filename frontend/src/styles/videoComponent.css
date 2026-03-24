@@ -1435,3 +1435,46 @@
         height: 28px;
     }
 }
+
+/* ── Floating Share Button ───────────────────────────────────────────────── */
+.meeting-share-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 45;
+    width: 44px !important;
+    height: 44px !important;
+    background: rgba(15, 20, 35, 0.75) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 50% !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease !important;
+    animation: shareBtnFadeIn 0.4s ease forwards;
+}
+
+@keyframes shareBtnFadeIn {
+    from { opacity: 0; transform: scale(0.8); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.meeting-share-btn:hover {
+    background: rgba(99, 102, 241, 0.25) !important;
+    border-color: rgba(99, 102, 241, 0.5) !important;
+    color: #a5b4fc !important;
+    transform: scale(1.08) !important;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.2);
+}
+
+.meeting-share-btn.copied {
+    background: rgba(74, 222, 128, 0.2) !important;
+    border-color: rgba(74, 222, 128, 0.4) !important;
+    color: #4ade80 !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 16px rgba(74, 222, 128, 0.15);
+}
+
+.meeting-share-btn svg {
+    font-size: 1.2rem !important;
+}

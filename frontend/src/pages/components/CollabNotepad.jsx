@@ -22,15 +22,14 @@ import Quill from 'quill';
 import QuillCursors from 'quill-cursors';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
+import Switch from '@mui/material/Switch';
+import { styled } from '@mui/material/styles';
 import UndoIcon from '@mui/icons-material/Undo';
 import RedoIcon from '@mui/icons-material/Redo';
 import DownloadIcon from '@mui/icons-material/Download';
 import CloseIcon from '@mui/icons-material/Close';
 import CircleIcon from '@mui/icons-material/Circle';
 import EditNoteIcon from '@mui/icons-material/EditNote';
-import ShareIcon from '@mui/icons-material/Share';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import CheckIcon from '@mui/icons-material/Check';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatStrikethroughIcon from '@mui/icons-material/FormatStrikethrough';
@@ -45,6 +44,48 @@ import '../../styles/notepad.css';
 
 // Register Quill cursors module
 Quill.register('modules/cursors', QuillCursors);
+
+// AntSwitch styled component (green theme)
+const AntSwitch = styled(Switch)(({ theme }) => ({
+    width: 28,
+    height: 16,
+    padding: 0,
+    display: 'flex',
+    '&:active': {
+        '& .MuiSwitch-thumb': {
+            width: 15,
+        },
+        '& .MuiSwitch-switchBase.Mui-checked': {
+            transform: 'translateX(9px)',
+        },
+    },
+    '& .MuiSwitch-switchBase': {
+        padding: 2,
+        '&.Mui-checked': {
+            transform: 'translateX(12px)',
+            color: '#fff',
+            '& + .MuiSwitch-track': {
+                opacity: 1,
+                backgroundColor: '#4ade80',
+            },
+        },
+    },
+    '& .MuiSwitch-thumb': {
+        boxShadow: '0 2px 4px 0 rgb(0 35 11 / 20%)',
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        transition: theme.transitions.create(['width'], {
+            duration: 200,
+        }),
+    },
+    '& .MuiSwitch-track': {
+        borderRadius: 16 / 2,
+        opacity: 1,
+        backgroundColor: 'rgba(255,255,255,.35)',
+        boxSizing: 'border-box',
+    },
+}));
 
 // Generate a consistent color based on user name
 const getUserColor = (name) => {
@@ -78,15 +119,105 @@ const CollabNotepad = ({ roomId, userName, onClose }) => {
     const providerRef = useRef(null);
     const undoManagerRef = useRef(null);
     const [isConnected, setIsConnected] = useState(false);
+    const [isCollabEnabled, setIsCollabEnabled] = useState(true);
     const [activeUsers, setActiveUsers] = useState([]);
-    const [copied, setCopied] = useState(false);
+
+    // Sanitize and ensure valid userName
+    const sanitizedUserName = userName && userName.trim()
+        ? userName.trim()
+        : `User-${Math.random().toString(36).substring(2, 7)}`;
 
     // Sanitize roomId for use as Yjs document name
     const sanitizedRoomId = roomId.replace(/[^a-zA-Z0-9-_]/g, '_');
 
-    // Initialize Yjs and Quill
+    // Initialize Quill editor (always)
     useEffect(() => {
         if (!editorRef.current || quillRef.current) return;
+
+        // Initialize Quill editor
+        const quill = new Quill(editorRef.current, {
+            theme: 'snow',
+            modules: {
+                cursors: true,
+                toolbar: {
+                    container: '#notepad-toolbar'
+                },
+                history: {
+                    userOnly: true
+                }
+            },
+            placeholder: 'Start taking notes...'
+        });
+        quillRef.current = quill;
+
+        // Keyboard shortcuts for undo/redo
+        const handleKeydown = (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
+                e.preventDefault();
+                if (e.shiftKey) {
+                    if (undoManagerRef.current) {
+                        undoManagerRef.current.redo();
+                    } else {
+                        document.execCommand('redo');
+                    }
+                } else {
+                    if (undoManagerRef.current) {
+                        undoManagerRef.current.undo();
+                    } else {
+                        document.execCommand('undo');
+                    }
+                }
+            } else if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
+                e.preventDefault();
+                if (undoManagerRef.current) {
+                    undoManagerRef.current.redo();
+                } else {
+                    document.execCommand('redo');
+                }
+            }
+        };
+
+        editorRef.current.addEventListener('keydown', handleKeydown);
+
+        // Cleanup function
+        return () => {
+            editorRef.current?.removeEventListener('keydown', handleKeydown);
+
+            if (quillRef.current) {
+                quillRef.current = null;
+            }
+        };
+    }, []);
+
+    // Initialize/teardown Yjs collaboration when toggle changes
+    useEffect(() => {
+        if (!quillRef.current || !isCollabEnabled) {
+            // Cleanup YJS if it was previously connected
+            if (providerRef.current) {
+                providerRef.current.disconnect();
+                providerRef.current.destroy();
+                providerRef.current = null;
+            }
+
+            if (undoManagerRef.current) {
+                undoManagerRef.current.destroy();
+                undoManagerRef.current = null;
+            }
+
+            if (yDocRef.current) {
+                yDocRef.current.destroy();
+                yDocRef.current = null;
+            }
+
+            setIsConnected(false);
+            setActiveUsers([]);
+            return;
+        }
+
+        const quill = quillRef.current;
+
+        // Save current content before switching to collab
+        const currentContent = quill.getContents();
 
         // Create Y.Doc for this room
         const ydoc = new Y.Doc();
@@ -102,22 +233,6 @@ const CollabNotepad = ({ roomId, userName, onClose }) => {
             setIsConnected(status === 'connected');
         });
 
-        // Initialize Quill editor
-        const quill = new Quill(editorRef.current, {
-            theme: 'snow',
-            modules: {
-                cursors: true,
-                toolbar: {
-                    container: '#notepad-toolbar'
-                },
-                history: {
-                    userOnly: true
-                }
-            },
-            placeholder: 'Start taking notes together...'
-        });
-        quillRef.current = quill;
-
         // Get Y.Text for document content
         const ytext = ydoc.getText('quill');
 
@@ -128,11 +243,30 @@ const CollabNotepad = ({ roomId, userName, onClose }) => {
         // Bind Quill to Y.Text for real-time sync
         let isUpdatingFromYjs = false;
 
-        // Sync initial content from Yjs to Quill
-        const initialContent = ytext.toDelta();
-        if (initialContent.length > 0) {
-            quill.setContents(initialContent, 'silent');
-        }
+        // Sync initial content from Yjs to Quill or restore previous content
+        provider.once('sync', (isSynced) => {
+            if (isSynced) {
+                const yjsContent = ytext.toDelta();
+                if (yjsContent.length > 0) {
+                    // Use YJS content if available
+                    quill.setContents(yjsContent, 'silent');
+                } else {
+                    // If YJS is empty, push current content to YJS
+                    if (currentContent.ops.some(op => op.insert && op.insert.trim())) {
+                        ydoc.transact(() => {
+                            let index = 0;
+                            currentContent.ops.forEach(op => {
+                                if (op.insert !== undefined) {
+                                    const text = typeof op.insert === 'string' ? op.insert : '\n';
+                                    ytext.insert(index, text, op.attributes || {});
+                                    index += text.length;
+                                }
+                            });
+                        });
+                    }
+                }
+            }
+        });
 
         // Listen for remote changes from Yjs
         ytext.observe((event) => {
@@ -157,7 +291,7 @@ const CollabNotepad = ({ roomId, userName, onClose }) => {
         });
 
         // Listen for local changes from Quill
-        quill.on('text-change', (delta, oldDelta, source) => {
+        const handleTextChange = (delta, oldDelta, source) => {
             if (source !== 'user' || isUpdatingFromYjs) return;
 
             ydoc.transact(() => {
@@ -177,31 +311,35 @@ const CollabNotepad = ({ roomId, userName, onClose }) => {
                     }
                 });
             });
-        });
+        };
+
+        quill.on('text-change', handleTextChange);
 
         // Setup awareness for multi-user cursors
         const awareness = provider.awareness;
         const cursors = quill.getModule('cursors');
 
         // Set local user info
-        const userColor = getUserColor(userName);
+        const userColor = getUserColor(sanitizedUserName);
         awareness.setLocalStateField('user', {
-            name: userName,
+            name: sanitizedUserName,
             color: userColor
         });
 
         // Track cursor position
-        quill.on('selection-change', (range) => {
+        const handleSelectionChange = (range) => {
             if (range) {
                 awareness.setLocalStateField('cursor', {
                     index: range.index,
                     length: range.length
                 });
             }
-        });
+        };
+
+        quill.on('selection-change', handleSelectionChange);
 
         // Render remote cursors and track active users
-        awareness.on('change', () => {
+        const handleAwarenessChange = () => {
             const states = awareness.getStates();
             const users = [];
 
@@ -232,28 +370,15 @@ const CollabNotepad = ({ roomId, userName, onClose }) => {
             });
 
             setActiveUsers(users);
-        });
-
-        // Keyboard shortcuts for undo/redo
-        const handleKeydown = (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'z') {
-                e.preventDefault();
-                if (e.shiftKey) {
-                    undoManagerRef.current?.redo();
-                } else {
-                    undoManagerRef.current?.undo();
-                }
-            } else if ((e.ctrlKey || e.metaKey) && e.key === 'y') {
-                e.preventDefault();
-                undoManagerRef.current?.redo();
-            }
         };
 
-        editorRef.current.addEventListener('keydown', handleKeydown);
+        awareness.on('change', handleAwarenessChange);
 
         // Cleanup function
         return () => {
-            editorRef.current?.removeEventListener('keydown', handleKeydown);
+            quill.off('text-change', handleTextChange);
+            quill.off('selection-change', handleSelectionChange);
+            awareness.off('change', handleAwarenessChange);
 
             if (providerRef.current) {
                 providerRef.current.disconnect();
@@ -266,25 +391,37 @@ const CollabNotepad = ({ roomId, userName, onClose }) => {
                 yDocRef.current = null;
             }
 
-            if (quillRef.current) {
-                quillRef.current = null;
-            }
-
             if (undoManagerRef.current) {
                 undoManagerRef.current.destroy();
                 undoManagerRef.current = null;
             }
+
+            setIsConnected(false);
+            setActiveUsers([]);
         };
-    }, [sanitizedRoomId, userName]);
+    }, [sanitizedRoomId, userName, isCollabEnabled]);
 
     // Handle undo
     const handleUndo = useCallback(() => {
-        undoManagerRef.current?.undo();
+        if (undoManagerRef.current) {
+            undoManagerRef.current.undo();
+        } else {
+            quillRef.current?.history.undo();
+        }
     }, []);
 
     // Handle redo
     const handleRedo = useCallback(() => {
-        undoManagerRef.current?.redo();
+        if (undoManagerRef.current) {
+            undoManagerRef.current.redo();
+        } else {
+            quillRef.current?.history.redo();
+        }
+    }, []);
+
+    // Handle collaboration toggle
+    const handleCollabToggle = useCallback((event) => {
+        setIsCollabEnabled(event.target.checked);
     }, []);
 
     // Download notes as .txt
@@ -305,53 +442,24 @@ const CollabNotepad = ({ roomId, userName, onClose }) => {
         URL.revokeObjectURL(url);
     }, []);
 
-    // Share room link
-    const handleShare = useCallback(async () => {
-        const shareUrl = window.location.href;
-
-        try {
-            await navigator.clipboard.writeText(shareUrl);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        } catch (err) {
-            // Fallback for older browsers
-            const textArea = document.createElement('textarea');
-            textArea.value = shareUrl;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        }
-    }, []);
-
-    // Toolbar button handlers
-    const formatText = (format, value = true) => {
-        const quill = quillRef.current;
-        if (!quill) return;
-
-        const selection = quill.getSelection();
-        if (selection) {
-            if (format === 'header') {
-                quill.format('header', value);
-            } else {
-                const currentFormat = quill.getFormat();
-                quill.format(format, !currentFormat[format]);
-            }
-        }
-    };
-
     return (
         <div className="notepad-panel">
             {/* Header */}
             <div className="notepad-header">
                 <div className="notepad-header-left">
                     <EditNoteIcon className="notepad-title-icon" />
-                    <h2>Collaborative Notes</h2>
+                    <h2>Notes</h2>
                 </div>
                 <div className="notepad-header-right">
-                    {isConnected && (
+                    <Tooltip title={isCollabEnabled ? "Collaboration enabled" : "Collaboration disabled"}>
+                        <AntSwitch
+                            checked={isCollabEnabled}
+                            onChange={handleCollabToggle}
+                            size="small"
+                        />
+                    </Tooltip>
+
+                    {isCollabEnabled && isConnected && (
                         <Tooltip title="Real-time sync active">
                             <div className="notepad-status connected">
                                 <CircleIcon />
@@ -359,7 +467,7 @@ const CollabNotepad = ({ roomId, userName, onClose }) => {
                             </div>
                         </Tooltip>
                     )}
-                    
+
                     <Tooltip title="Download notes">
                         <IconButton onClick={handleDownload} size="small" className="notepad-header-btn">
                             <DownloadIcon />
@@ -376,7 +484,7 @@ const CollabNotepad = ({ roomId, userName, onClose }) => {
             </div>
 
             {/* Active Users */}
-            {activeUsers.length > 0 && (
+            {isCollabEnabled && activeUsers.length > 0 && (
                 <div className="notepad-users">
                     {activeUsers.slice(0, 5).map((user, idx) => (
                         <Tooltip key={user.clientId || idx} title={user.name}>

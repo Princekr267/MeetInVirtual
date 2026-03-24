@@ -15,6 +15,10 @@ import ConfirmDialog from './components/ConfirmDialog';
 import ControlBar from './components/ControlBar';
 import CollabNotepad from '../components/CollabNotepad';
 import servers from '../../enviroment';
+import ShareIcon from '@mui/icons-material/Share';
+import CheckIcon from '@mui/icons-material/Check';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 
 const SERVER_URL = servers;
 const AI_SENDER  = "🤖 AI Assistant";
@@ -92,6 +96,25 @@ export default function VideoMeetComponent() {
 
     // Remote video streams
     let [videos, setVideos] = useState([]);
+
+    // Share button state
+    const [shareCopied, setShareCopied] = useState(false);
+
+    const handleShare = async () => {
+        const shareUrl = window.location.href;
+        try {
+            await navigator.clipboard.writeText(shareUrl);
+        } catch {
+            const ta = document.createElement('textarea');
+            ta.value = shareUrl;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        }
+        setShareCopied(true);
+        setTimeout(() => setShareCopied(false), 2000);
+    };
 
     // ── Permissions & initial stream ────────────────────────────────────────
     const getPermissions = async () => {
@@ -714,6 +737,17 @@ export default function VideoMeetComponent() {
                     onClose={handleNotepadToggle}
                 />
             )}
+
+            {/* ── Floating Share Button ─────────────────────────────────── */}
+            <Tooltip title={shareCopied ? 'Link copied!' : 'Copy meeting link'} placement="right">
+                <IconButton
+                    onClick={handleShare}
+                    className={`meeting-share-btn${shareCopied ? ' copied' : ''}`}
+                    aria-label="Copy meeting link"
+                >
+                    {shareCopied ? <CheckIcon /> : <ShareIcon />}
+                </IconButton>
+            </Tooltip>
 
             <ConfirmDialog 
                 showKickConfirm={showKickConfirm}

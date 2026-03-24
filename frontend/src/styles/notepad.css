@@ -88,21 +88,14 @@
     background: rgba(255, 71, 87, 0.15) !important;
 }
 
-.notepad-share-btn {
-    position: relative;
-}
-
-.notepad-share-btn:hover {
-    color: #818cf8 !important;
-    background: rgba(99, 102, 241, 0.15) !important;
-}
-
-.notepad-share-btn.copied {
-    color: #4ade80 !important;
-    background: rgba(74, 222, 128, 0.15) !important;
-}
 
 /* ── Connection Status ──────────────────────────────────────────────────── */
+.notepad-collab-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
 .notepad-status {
     display: flex;
     align-items: center;
@@ -324,14 +317,14 @@
 
 .notepad-panel .ql-editor {
     padding: 20px;
-    color: rgba(255, 255, 255, 0.9);
+    color: rgba(255, 255, 255, 0.9) !important;
     line-height: 1.7;
     overflow-y: auto;
     height: 100%;
 }
 
 .notepad-panel .ql-editor.ql-blank::before {
-    color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.4) !important;
     font-style: normal;
     left: 20px;
 }
@@ -339,7 +332,7 @@
 .notepad-panel .ql-editor h1 {
     font-size: 1.75rem;
     font-weight: 700;
-    color: #fff;
+    color: #fff !important;
     margin: 0 0 16px 0;
     line-height: 1.3;
 }
@@ -347,26 +340,27 @@
 .notepad-panel .ql-editor h2 {
     font-size: 1.35rem;
     font-weight: 600;
-    color: #fff;
+    color: #fff !important;
     margin: 0 0 12px 0;
     line-height: 1.4;
 }
 
 .notepad-panel .ql-editor p {
     margin: 0 0 12px 0;
+    color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .notepad-panel .ql-editor strong {
-    color: #fff;
+    color: #fff !important;
     font-weight: 600;
 }
 
 .notepad-panel .ql-editor em {
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .notepad-panel .ql-editor s {
-    color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.4) !important;
 }
 
 .notepad-panel .ql-editor ul,
